@@ -40,7 +40,6 @@ public:
     std::string join(const std::string& separator) const;
 
     static StringList split(std::string str, const std::string& separator);
-    static StringList split(std::string str, const std::string& separator, const std::string& evade);
 
     StringList& operator << (const std::string& str);
 

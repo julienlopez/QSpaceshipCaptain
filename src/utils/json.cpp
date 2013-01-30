@@ -2,7 +2,7 @@
 #include "stringlist.hpp"
 
 #include <sstream>
-
+#include <stack>
 #include <boost/lexical_cast.hpp>
 
 std::string JSon::toJson(const Any& any)
@@ -77,11 +77,10 @@ AnyMap JSon::parseToMap(std::string json) throw(std::invalid_argument)
     clearBothEnds(json);
 
     AnyMap res;
-    //TODO use (and do) more advanced split method
-    StringList lst = StringList::split(json, ",");
+    StringList lst = split(json, ',');
     for(StringList::const_iterator i = lst.begin(); i != lst.end(); ++i)
     {
-        StringList l = StringList::split(*i, ":");
+        StringList l = split(*i, ':');
         if(l.size() != 2)
         {
             throw std::invalid_argument("invalid string to parse to a pair name/value:\n" + *i);
@@ -103,10 +102,21 @@ AnyMap JSon::parseToMap(std::string json) throw(std::invalid_argument)
 
 AnyList JSon::parseToList(std::string json) throw(std::invalid_argument)
 {
-//    if(json.size() < 2 || *json.begin() != '[' || json[json.length()-1] != ']')
-//    {
+    if(json.size() < 2 || *json.begin() != '[' || json[json.length()-1] != ']')
+    {
         throw std::invalid_argument("invalid string to parse to a list:\n" + json);
-//    }
+    }
+    eraseFirst(json);
+    eraseLast(json);
+    clearBothEnds(json);
+
+    AnyList res;
+    StringList lst = split(json, ',');
+    for(StringList::const_iterator i = lst.begin(); i != lst.end(); ++i)
+    {
+        res.push_back(fromJson(*i));
+    }
+    return res;
 }
 
 Any JSon::parseValue(std::string json) throw(std::invalid_argument)
@@ -157,4 +167,46 @@ void JSon::eraseFirst(std::string& str)
 void JSon::eraseLast(std::string& str)
 {
     str.erase(str.length()-1, 1);
+}
+
+StringList JSon::split(std::string string, char separator)
+{
+    static std::string caractereEvitementDebut = "\"{[";
+    static std::string caractereEvitementFin = "\"}]";
+
+    StringList resultat;
+    while(true)
+    {
+        size_t pos = string.find(separator);
+        if(pos == std::string::npos) break;
+        std::stack<unsigned int> stack;
+        for(size_t i = 0; true; i++)
+        {
+            if(i == string.size()-1)
+            {
+                pos = -1;
+                break;
+            }
+            if(string.at( i ) == separator && stack.empty())
+            {
+                if ( i > pos ) pos = i;
+                break;
+            }
+            if(caractereEvitementDebut.find(string.at(i)) != std::string::npos && ( i == 0 || string.at( i - 1 ) != '\\' ))
+            {
+                stack.push(caractereEvitementDebut.find(string.at(i)));
+
+            }
+            if(!stack.empty() && string.at(i) == caractereEvitementFin.at( stack.top()))
+            {
+                stack.pop();
+
+            }
+        }
+        if(pos == std::string::npos) break;
+        resultat << string.substr(0, pos);
+        string.erase(0,pos+1);
+    }
+    if(!string.empty()) resultat << string;
+    return resultat;
 }

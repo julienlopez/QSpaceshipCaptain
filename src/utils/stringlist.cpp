@@ -114,14 +114,6 @@ StringList StringList::split(std::string str, const std::string& separator)
     return res;
 }
 
-#include <cassert>
-
-StringList StringList::split(std::string str, const std::string& separator, const std::string& evade)
-{
-    assert(0&&"not impl.");
-    return StringList();
-}
-
 StringList& StringList::operator << (const std::string& str)
 {
     m_list.push_back(str);

@@ -5,6 +5,8 @@
 
 #include <stdexcept>
 
+class StringList;
+
 class JSon
 {
 public:
@@ -40,6 +42,9 @@ private:
     static void eraseFirst(std::string& str);
     static void eraseLast(std::string& str);
     static bool isNumber(const std::string& str);
+
+public:
+    static StringList split(std::string string, char separator);
 };
 
 #endif // JSON_H

@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     ShipDisplay* display = new ShipDisplay;
     setCentralWidget(display);
 
-    QFile fichier("ship.json");
+    QFile fichier("ship2.json");
     if(fichier.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream flux(&fichier);

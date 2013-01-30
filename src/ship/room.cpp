@@ -30,16 +30,7 @@ Room Room::fromJson(const std::string& json)
     return res;
 }
 
-void Room::computeSquares()
+void Room::setSquares(const type_list_coords& squares)
 {
-    m_squares.clear();
-    if(m_walls.empty()) return;
-    type_list_coords::const_iterator it = m_walls.begin();
-    ++it;
-    for(; it != m_walls.end(); ++it)
-    {
-        type_list_coords::const_iterator previous = it;
-        --previous;
-        Point line = *it - *previous;
-    }
+    m_squares = squares;
 }

@@ -11,6 +11,7 @@
 
 class System;
 
+//TODO remove inheritance
 class Room : public Size<uint8_t>
 {
 public:
@@ -26,12 +27,11 @@ public:
 
     static Room fromJson(const std::string& json);
 
+    void setSquares(const type_list_coords& squares);
+
 private:
     sp_system m_system;
-    type_list_coords m_walls;
     type_list_coords m_squares;
-
-    void computeSquares();
 };
 
 #endif // ROOM_HPP
