@@ -31,8 +31,37 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
     marge /= 2;
 
     QPainter p(this);
-    p.setPen(Qt::lightGray);
     p.translate(marge.x(), marge.y());
     p.scale(ratio, ratio);
+
+    p.save();
+    p.setPen(Qt::lightGray);
+    QPen pen = p.pen();
+    pen.setWidthF(0.1);
+    p.setPen(pen);
+    p.setBrush(Qt::darkGray);
     p.drawRect(0,0, ship->width(), ship->height());
+    p.restore();
+
+    p.setPen(Qt::black);
+    p.setBrush(Qt::white);
+    for(Ship::type_list_rooms::const_iterator i = ship->roomsBegin(); i != ship->roomsEnd(); ++i)
+    {
+        for(Room::type_list_coords::const_iterator j = i->squaresBegin(); j != i->squaresEnd(); ++j)
+        {
+            p.drawRect(j->x(), j->y(), 1, 1);
+        }
+        p.save();
+        p.setBrush(Qt::NoBrush);
+        p.setPen(Qt::black);
+        QPen pen = p.pen();
+        pen.setWidthF(0.1);
+        p.setPen(pen);
+        Room::type_list_coords walls = i->computeWalls();
+        QPolygonF poly;
+        for(Room::type_list_coords::const_iterator it = walls.begin(); it != walls.end(); ++it)
+            poly.push_back(QPointF(it->x(), it->y()));
+        p.drawPolygon(poly);
+        p.restore();
+    }
 }

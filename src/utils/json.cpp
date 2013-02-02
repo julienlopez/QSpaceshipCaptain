@@ -192,12 +192,17 @@ StringList JSon::split(std::string string, char separator)
                 if ( i > pos ) pos = i;
                 break;
             }
-            if(caractereEvitementDebut.find(string.at(i)) != std::string::npos && ( i == 0 || string.at( i - 1 ) != '\\' ))
+            bool hasbeenPushed = false;
+            size_t idCharEscape = caractereEvitementDebut.find(string.at(i));
+            if(idCharEscape != std::string::npos && ( i == 0 || string.at( i - 1 ) != '\\' ))
             {
-                stack.push(caractereEvitementDebut.find(string.at(i)));
-
+                if(caractereEvitementDebut[idCharEscape] != caractereEvitementFin[idCharEscape] || stack.empty() || stack.top() != idCharEscape)
+                {
+                    stack.push(caractereEvitementDebut.find(string.at(i)));
+                    hasbeenPushed = true;
+                }
             }
-            if(!stack.empty() && string.at(i) == caractereEvitementFin.at( stack.top()))
+            if(!hasbeenPushed && !stack.empty() && string.at(i) == caractereEvitementFin.at( stack.top()) && ( i == 0 || string.at( i - 1 ) != '\\' ))
             {
                 stack.pop();
 

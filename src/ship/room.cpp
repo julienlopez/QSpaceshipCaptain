@@ -2,28 +2,37 @@
 #include "system.hpp"
 #include <utils/json.hpp>
 
-Room::Room(const Size8 &size): Size8(size)
+Room::Room()
 {}
 
 std::string Room::toJson() const
 {
     AnyMap map;
-    map["width"] = width();
-    map["height"] = height();
     if(m_system.get()) {
         map["system"] = m_system->toJson();
     }
     return JSon::toJson(map);
 }
 
-Room Room::fromJson(const std::string& json)
+Room Room::fromJson(const std::string& json) throw(std::invalid_argument)
 {
-    Room res;
     Any any = JSon::fromJson(json);
     AnyMap map = any.toMap();
-    res.setWidth(map["width"].toUInt8());
-    res.setHeight(map["height"].toUInt8());
-    AnyMap::const_iterator i = map.find("system");
+    return fromJson(map);
+}
+
+Room Room::fromJson(const AnyMap& map) throw(std::invalid_argument)
+{
+    Room res;
+    AnyMap::const_iterator i = map.find("squares");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for squares");
+    AnyList squares = i->second.toList();
+    for(AnyList::const_iterator i = squares.begin(); i != squares.end(); ++i)
+    {
+        AnyMap map = i->toMap();
+        res.m_squares.push_back(Point(map["x"].toUInt8(), map["y"].toUInt8()));
+    }
+    i = map.find("system");
     if(i != map.end()) {
         res.m_system.reset(new System(System::fromJson(i->second.toString())));
     }
@@ -33,4 +42,35 @@ Room Room::fromJson(const std::string& json)
 void Room::setSquares(const type_list_coords& squares)
 {
     m_squares = squares;
+}
+
+Room::type_list_coords::const_iterator Room::squaresBegin() const
+{
+    return m_squares.begin();
+}
+
+Room::type_list_coords::const_iterator Room::squaresEnd() const
+{
+    return m_squares.end();
+}
+
+Room::type_list_coords Room::computeWalls() const
+{
+    type_list_coords res;
+    double minX = 1000;
+    double minY = 1000;
+    double maxX = 0;
+    double maxY = 0;
+    for(type_list_coords::const_iterator i = squaresBegin(); i != squaresEnd(); ++i)
+    {
+        minX = std::min(minX, i->x());
+        maxX = std::max(maxX, i->x());
+        minY = std::min(minY, i->y());
+        maxY = std::max(maxY, i->y());
+    }
+    res.push_back(Point(minX, minY));
+    res.push_back(Point(maxX+1, minY));
+    res.push_back(Point(maxX+1, maxY+1));
+    res.push_back(Point(minX, maxY+1));
+    return res;
 }

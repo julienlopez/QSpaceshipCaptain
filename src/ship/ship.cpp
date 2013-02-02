@@ -11,6 +11,16 @@ const std::string& Ship::name() const
     return m_name;
 }
 
+Ship::type_list_rooms::const_iterator Ship::roomsBegin() const
+{
+    return m_rooms.begin();
+}
+
+Ship::type_list_rooms::const_iterator Ship::roomsEnd() const
+{
+    return m_rooms.end();
+}
+
 std::string Ship::toJson() const
 {
     std::ostringstream res;
@@ -23,12 +33,31 @@ std::string Ship::toJson() const
     return res.str() + "] }";
 }
 
-Ship Ship::fromJson(const std::string& json)
+Ship Ship::fromJson(const std::string& json) throw(std::invalid_argument)
+{
+    AnyMap map = JSon::fromJson(json).toMap();
+    return fromJson(map);
+}
+
+Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
 {
     Ship res;
-    AnyMap map = JSon::fromJson(json).toMap();
-    res.m_name = map["name"].toString();
-    res.setWidth(map["width"].toUInt8());
-    res.setHeight(map["height"].toUInt8());
+    AnyMap::const_iterator i = map.find("name");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for name");
+    res.m_name = i->second.toString();
+
+    i = map.find("width");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for width");
+    res.setWidth(i->second.toUInt8());
+
+    i = map.find("height");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for height");
+    res.setHeight(i->second.toUInt8());
+
+    i = map.find("rooms");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for rooms");
+    AnyList rooms = i->second.toList();
+    for(AnyList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
+        res.m_rooms.push_back(Room::fromJson(i->toMap()));
     return res;
 }

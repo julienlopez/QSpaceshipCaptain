@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/stringlist.cpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/any/any.cpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/json.cpp \
+    $$QSPACESHIPCAPTAIN_SRC/utils/point.cpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/room.cpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/system.cpp \
     testroom.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     $$QSPACESHIPCAPTAIN_SRC/utils/stringlist.hpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/any/any.hpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/json.hpp \
+    $$QSPACESHIPCAPTAIN_SRC/utils/point.hpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/room.hpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/system.hpp \
     testroom.hpp \

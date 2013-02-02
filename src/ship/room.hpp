@@ -4,30 +4,40 @@
 #include <utils/types.hpp>
 #include <utils/size.hpp>
 #include <utils/point.hpp>
+#include <utils/any/any.hpp>
 
 #include <list>
+#include <stdexcept>
 
 #include <boost/shared_ptr.hpp>
 
 class System;
 
-//TODO remove inheritance
-class Room : public Size<uint8_t>
+class Room
 {
 public:
-    typedef Size<uint8_t> Size8;
-
     typedef boost::shared_ptr<System> sp_system;
 
     typedef std::list<Point> type_list_coords;
 
-    Room(const Size8& size = Size8(2, 2));
+    Room();
 
     std::string toJson() const;
 
-    static Room fromJson(const std::string& json);
+    static Room fromJson(const std::string& json) throw(std::invalid_argument);
+    static Room fromJson(const AnyMap& map) throw(std::invalid_argument);
 
     void setSquares(const type_list_coords& squares);
+
+    type_list_coords::const_iterator squaresBegin() const;
+    type_list_coords::const_iterator squaresEnd() const;
+
+    /**
+      * \brief return the vertexes of the polygon making the outer walls of the room
+      *
+      * For now, returns only a square, //TODO: upgrade the aglorithm
+      */
+    type_list_coords computeWalls() const;
 
 private:
     sp_system m_system;

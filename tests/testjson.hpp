@@ -23,6 +23,10 @@ private slots:
       * \brief test json splitting mehtod, with a comma in a string
       */
     void testSplit3();
+    /**
+      * \brief test json splitting mehtod, with a string before the splitting character
+      */
+    void testSplit4();
 };
 
 #endif // TESTJSON_HPP
