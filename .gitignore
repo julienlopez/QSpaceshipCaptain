@@ -20,3 +20,5 @@ src/Makefile*
 src/object_script.*
 tests/Makefile*
 tests/object_script.*
+moc
+moc_tests
