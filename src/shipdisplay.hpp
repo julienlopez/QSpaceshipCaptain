@@ -6,6 +6,8 @@
 #include <QWidget>
 
 class Ship;
+class Room;
+class Door;
 
 class ShipDisplay : public QWidget
 {
@@ -27,6 +29,9 @@ public slots:
 
 private:
     wp_ship m_ship;
+
+    void drawRoom(QPainter& p, const Room& room) const;
+    void drawDoor(QPainter& p, const Door& room) const;
     
 };
 
