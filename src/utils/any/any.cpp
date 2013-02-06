@@ -28,8 +28,6 @@ Any::Any(const std::map<std::string, Any>& map): m_data(map)
 {}
 Any::Any(const std::list<Any>& list): m_data(list)
 {}
-Any::Any(const Point& point): m_data(point)
-{}
 
 std::map<std::string, Any> Any::toMap() const
 {

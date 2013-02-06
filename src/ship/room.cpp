@@ -63,10 +63,10 @@ Room::type_list_coords Room::computeWalls() const
     double maxY = 0;
     for(type_list_coords::const_iterator i = squaresBegin(); i != squaresEnd(); ++i)
     {
-        minX = std::min(minX, i->x());
-        maxX = std::max(maxX, i->x());
-        minY = std::min(minY, i->y());
-        maxY = std::max(maxY, i->y());
+        minX = std::min<double>(minX, i->x());
+        maxX = std::max<double>(maxX, i->x());
+        minY = std::min<double>(minY, i->y());
+        maxY = std::max<double>(maxY, i->y());
     }
     res.push_back(Point(minX, minY));
     res.push_back(Point(maxX+1, minY));
