@@ -1,0 +1,64 @@
+#include "door.hpp"
+#include <utils/json.hpp>
+
+#include <sstream>
+
+Door::Door(const Point& from, const Point& to): m_from(from), m_to(to)
+{}
+
+Door::Door(const Door& door): m_from(door.m_from), m_to(door.m_to)
+{}
+
+const Point& Door::from() const
+{
+    return m_from;
+}
+
+const Point& Door::to() const
+{
+    return m_to;
+}
+
+bool Door::isVertical() const
+{
+    return m_from.x() == m_to.x();
+}
+
+bool Door::isHorizontal() const
+{
+    return m_from.y() == m_to.y();
+}
+
+std::string Door::toJson() const
+{
+//    static AnyMap map;
+//    map["from"] = Any(m_from);
+//    map["to"] = Any(m_to);
+//    return JSon::toJson(map);
+    std::ostringstream oss;
+    oss << "{ \"from\" : { \"x\" : " << m_from.x() << ", \"y\" : " << m_from.y() << " }, \"to\" : { \"x\" : " << m_from.x() << ", \"y\" : " << m_from.y() << " } }";
+    return oss.str();
+}
+
+Door Door::fromJson(const std::string& json) throw(std::invalid_argument)
+{
+    Any map = JSon::fromJson(json);
+    return fromJson(map.toMap());
+}
+
+Door Door::fromJson(const AnyMap& map) throw(std::invalid_argument)
+{
+    Door res;
+
+    AnyMap::const_iterator i = map.find("from");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for from");
+    AnyMap m = i->second.toMap();
+    res.m_from = Point(m["x"].toUInt8(), m["y"].toUInt8());
+
+    i = map.find("to");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for to");
+    m = i->second.toMap();
+    res.m_to = Point(m["x"].toUInt8(), m["y"].toUInt8());
+
+    return res;
+}

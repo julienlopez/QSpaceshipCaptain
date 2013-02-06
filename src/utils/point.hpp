@@ -4,6 +4,9 @@
 class Point
 {
 public:
+
+    static const double PI = 3.14159265;
+
     Point(double x = 0, double y = 0);
 
     double x() const;
@@ -18,6 +21,12 @@ public:
 
     double dot(const Point& p) const;
     double length() const;
+
+    bool operator==(const Point& p) const;
+
+    double angle() const;
+    void rotate(double angle);
+    void rotate(const Point &centre, double angle);
 
 private:
     double m_x;

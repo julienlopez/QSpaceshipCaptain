@@ -6,7 +6,7 @@
 ShipDisplay::ShipDisplay(QWidget *parent) :
     QWidget(parent)
 {
-    setMinimumSize(400,400);
+    setMinimumSize(800, 800);
     setAutoFillBackground(true);
     QPalette p = palette();
     p.setColor(QPalette::Window, Qt::black);
@@ -43,6 +43,7 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
     p.drawRect(0,0, ship->width(), ship->height());
     p.restore();
 
+    p.save();
     p.setPen(Qt::black);
     p.setBrush(Qt::white);
     for(Ship::type_list_rooms::const_iterator i = ship->roomsBegin(); i != ship->roomsEnd(); ++i)
@@ -64,4 +65,24 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
         p.drawPolygon(poly);
         p.restore();
     }
+    p.restore();
+
+    p.save();
+    p.setPen(Qt::cyan);
+    pen = p.pen();
+    pen.setWidthF(0.15);
+    p.setPen(pen);
+    for(Ship::type_list_doors::const_iterator i = ship->doorsBegin(); i != ship->doorsEnd(); ++i)
+    {
+        Point from = i->from() + Point(0.5, 0.5);
+        Point to = i->to() + Point(0.5, 0.5);
+        Point centre = (from+to)/2;
+        to.rotate(centre, Point::PI/2);
+        from.rotate(centre, Point::PI/2);
+        to = 0.4*(to-centre) + centre;
+        from = 0.4*(from-centre) + centre;
+        QLineF line(QPointF(from.x(), from.y()), QPointF(to.x(), to.y()));
+        p.drawLine(line);
+    }
+    p.restore();
 }

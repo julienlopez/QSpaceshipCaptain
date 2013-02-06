@@ -9,6 +9,8 @@
 #include <list>
 #include <string>
 
+class Point;
+
 class Any
 {
 public:
@@ -25,6 +27,7 @@ public:
     Any(const std::string& str);
     Any(const std::map<std::string, Any>& map);
     Any(const std::list<Any>& list);
+    Any(const Point& point);
 
     std::map<std::string, Any> toMap() const;
     std::list<Any> toList() const;
@@ -37,6 +40,7 @@ public:
     uint16_t toUInt16() const;
     int8_t toInt8() const;
     uint8_t toUInt8() const;
+    double toDouble() const;
 
     bool isString() const;
     bool isLong() const;

@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     ship/system.cpp \
     shipdisplay.cpp \
     utils/stringlist.cpp \
-    utils/point.cpp
+    utils/point.cpp \
+    pathinghelper.cpp \
+    ship/door.cpp
 
 HEADERS  += mainwindow.hpp \
     ship/ship.hpp \
@@ -35,5 +37,7 @@ HEADERS  += mainwindow.hpp \
     ship/system.hpp \
     shipdisplay.hpp \
     utils/stringlist.hpp \
-    utils/point.hpp
+    utils/point.hpp \
+    pathinghelper.hpp \
+    ship/door.hpp
 

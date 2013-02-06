@@ -74,3 +74,28 @@ Room::type_list_coords Room::computeWalls() const
     res.push_back(Point(minX, maxY+1));
     return res;
 }
+
+namespace
+{
+    class PointInRoom
+    {
+    public:
+        PointInRoom(const Point& p): m_topLeft(p)
+        {
+            m_bottomRight = p + Point(1, 1);
+        }
+        bool operator()(const Point& square) const
+        {
+            return square.x() >= m_topLeft.x() && square.x() <= m_bottomRight.x() && square.y() >= m_topLeft.y() && square.y() <= m_bottomRight.y();
+        }
+
+    private:
+        const Point& m_topLeft;
+        Point m_bottomRight;
+    };
+}
+
+bool Room::contains(const Point& point) const
+{
+    return std::find_if(m_squares.begin(), m_squares.end(), PointInRoom(point)) != m_squares.end();
+}

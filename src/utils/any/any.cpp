@@ -1,5 +1,7 @@
 #include "any.hpp"
 
+#include <utils/point.hpp>
+
 Any::Any()
 {}
 Any::Any(int8_t i): m_data(i)
@@ -25,6 +27,8 @@ Any::Any(const std::string& str): m_data(str)
 Any::Any(const std::map<std::string, Any>& map): m_data(map)
 {}
 Any::Any(const std::list<Any>& list): m_data(list)
+{}
+Any::Any(const Point& point): m_data(point)
 {}
 
 std::map<std::string, Any> Any::toMap() const
@@ -80,6 +84,11 @@ int8_t Any::toInt8() const
 uint8_t Any::toUInt8() const
 {
     return boost::any_cast<uint8_t>(m_data);
+}
+
+double Any::toDouble() const
+{
+    return boost::any_cast<double>(m_data);
 }
 
 bool Any::isString() const

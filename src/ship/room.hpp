@@ -39,6 +39,8 @@ public:
       */
     type_list_coords computeWalls() const;
 
+    bool contains(const Point& point) const;
+
 private:
     sp_system m_system;
     type_list_coords m_squares;
