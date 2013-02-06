@@ -3,10 +3,10 @@
 
 #include <sstream>
 
-Door::Door(const Point& from, const Point& to): m_from(from), m_to(to)
+Door::Door(const Point& from, const Point& to): m_isOpen(false), m_from(from), m_to(to)
 {}
 
-Door::Door(const Door& door): m_from(door.m_from), m_to(door.m_to)
+Door::Door(const Door& door): m_isOpen(door.m_isOpen), m_from(door.m_from), m_to(door.m_to)
 {}
 
 const Point& Door::from() const
@@ -27,6 +27,26 @@ bool Door::isVertical() const
 bool Door::isHorizontal() const
 {
     return m_from.y() == m_to.y();
+}
+
+bool Door::isOpen() const
+{
+    return m_isOpen;
+}
+
+void Door::setOpen(bool b)
+{
+    m_isOpen = b;
+}
+
+void Door::open()
+{
+    m_isOpen = true;
+}
+
+void Door::close()
+{
+    m_isOpen = false;
 }
 
 std::string Door::toJson() const

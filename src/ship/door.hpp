@@ -17,6 +17,10 @@ public:
 
     bool isVertical() const;
     bool isHorizontal() const;
+    bool isOpen() const;
+    void setOpen(bool b);
+    void open();
+    void close();
 
     //Json methods
     std::string toJson() const;
@@ -24,6 +28,7 @@ public:
     static Door fromJson(const AnyMap& map) throw(std::invalid_argument);
 
 private:
+    bool m_isOpen;
     Point m_from;
     Point m_to;
 };
