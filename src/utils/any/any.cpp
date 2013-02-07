@@ -56,7 +56,14 @@ std::string Any::toString() const
 
 int Any::toInt() const
 {
-    return boost::any_cast<int>(m_data);
+    try
+    {
+        return boost::any_cast<int>(m_data);
+    }
+    catch(boost::bad_any_cast& ex)
+    {
+        return boost::any_cast<uint32_t>(m_data);
+    }
 }
 
 uint32_t Any::toUInt() const
@@ -66,7 +73,14 @@ uint32_t Any::toUInt() const
 
 int16_t Any::toInt16() const
 {
-    return boost::any_cast<int16_t>(m_data);
+    try
+    {
+        return boost::any_cast<int16_t>(m_data);
+    }
+    catch(boost::bad_any_cast& ex)
+    {
+        return boost::any_cast<uint16_t>(m_data);
+    }
 }
 
 uint16_t Any::toUInt16() const
@@ -76,7 +90,14 @@ uint16_t Any::toUInt16() const
 
 int8_t Any::toInt8() const
 {
-    return boost::any_cast<int8_t>(m_data);
+    try
+    {
+        return boost::any_cast<int8_t>(m_data);
+    }
+    catch(boost::bad_any_cast& ex)
+    {
+        return boost::any_cast<uint8_t>(m_data);
+    }
 }
 
 uint8_t Any::toUInt8() const
