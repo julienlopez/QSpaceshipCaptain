@@ -65,6 +65,12 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
         drawDoor(p, *i);
     }
     p.restore();
+
+    //drawing the crew
+    for(Ship::type_list_crew::const_iterator i = ship->crewBegin(); i != ship->crewEnd(); ++i)
+    {
+        drawCrew(p, *i);
+    }
 }
 
 void ShipDisplay::drawRoom(QPainter& p, const Room& room) const
@@ -98,4 +104,16 @@ void ShipDisplay::drawDoor(QPainter& p, const Door& room) const
     from = 0.4*(from-centre) + centre;
     QLineF line(QPointF(from.x(), from.y()), QPointF(to.x(), to.y()));
     p.drawLine(line);
+}
+
+namespace {
+QPointF toQPointF(const PointF& p)
+{
+    return QPointF(p.x(), p.y());
+}
+}
+
+void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember) const
+{
+    p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
 }

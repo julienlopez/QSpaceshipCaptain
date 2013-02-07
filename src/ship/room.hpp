@@ -39,7 +39,7 @@ public:
       */
     type_list_coords computeWalls() const;
 
-    bool contains(const Point& point) const;
+    bool contains(const PointF &point) const;
 
     std::size_t squareNumber() const;
 

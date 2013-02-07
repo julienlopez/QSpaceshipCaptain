@@ -8,6 +8,7 @@
 class Ship;
 class Room;
 class Door;
+class CrewMember;
 
 class ShipDisplay : public QWidget
 {
@@ -32,6 +33,7 @@ private:
 
     void drawRoom(QPainter& p, const Room& room) const;
     void drawDoor(QPainter& p, const Door& room) const;
+    void drawCrew(QPainter& p, const CrewMember& crewMember) const;
     
 };
 

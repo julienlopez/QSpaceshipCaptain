@@ -3,9 +3,8 @@
 
 #include <sstream>
 
-CrewMember::CrewMember(const std::string& name): m_name(name)
-{
-}
+CrewMember::CrewMember(const std::string& name): m_name(name), m_position(-1, -1)
+{}
 
 const std::string& CrewMember::name() const
 {
@@ -15,6 +14,16 @@ const std::string& CrewMember::name() const
 const PointF& CrewMember::position() const
 {
     return m_position;
+}
+
+void CrewMember::setName(const std::string& name)
+{
+    m_name = name;
+}
+
+void CrewMember::setPosition(const PointF& pos)
+{
+    m_position = pos;
 }
 
 std::string CrewMember::toJson() const

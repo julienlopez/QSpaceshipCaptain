@@ -58,9 +58,13 @@ public:
     {
         return m_x * p.m_x + m_y * p.m_y;
     }
+    T dot() const
+    {
+        return dot(*this);
+    }
     double length() const
     {
-        return sqrt(dot(*this));
+        return sqrt(dot());
     }
 
     bool operator==(const Point2D& p) const
@@ -93,11 +97,17 @@ private:
     T m_y;
 };
 
+class PointF;
+
 class Point : public Point2D<int>
 {
+    typedef Point2D<int> BASE;
 public:
     Point(int x = 0, int y = 0);
     Point(const Point2D<int>& point);
+
+    bool operator==(const Point& p) const;
+    bool operator==(const PointF& p) const;
 };
 
 class PointF : public Point2D<double>
@@ -110,6 +120,10 @@ public:
 
     PointF operator+(const PointF& p) const;
     friend PointF operator+(const Point& p1, const PointF& p2);
+    PointF operator-(const PointF& p) const;
+
+    bool operator==(const Point& p) const;
+    bool operator==(const PointF& p) const;
 };
 
 #endif // POINT_HPP

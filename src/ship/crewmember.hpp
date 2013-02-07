@@ -15,6 +15,9 @@ public:
     const std::string& name() const;
     const PointF& position() const;
 
+    void setName(const std::string& name);
+    void setPosition(const PointF& pos);
+
     std::string toJson() const;
 
     static CrewMember fromJson(const std::string& json) throw(std::invalid_argument);

@@ -80,7 +80,7 @@ namespace
     class PointInRoom
     {
     public:
-        PointInRoom(const Point& p): m_topLeft(p)
+        PointInRoom(const PointF& p): m_topLeft(p)
         {
             m_bottomRight = p + Point(1, 1);
         }
@@ -90,12 +90,12 @@ namespace
         }
 
     private:
-        const Point& m_topLeft;
-        Point m_bottomRight;
+        const PointF& m_topLeft;
+        PointF m_bottomRight;
     };
 }
 
-bool Room::contains(const Point& point) const
+bool Room::contains(const PointF& point) const
 {
     return std::find_if(m_squares.begin(), m_squares.end(), PointInRoom(point)) != m_squares.end();
 }

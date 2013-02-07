@@ -1,5 +1,6 @@
 #include "ship.hpp"
 #include <utils/json.hpp>
+#include <utils/comparatormethodvalue.hpp>
 
 #include <sstream>
 
@@ -31,6 +32,16 @@ Ship::type_list_doors::const_iterator Ship::doorsEnd() const
     return m_doors.end();
 }
 
+Ship::type_list_crew::const_iterator Ship::crewBegin() const
+{
+    return m_crew.begin();
+}
+
+Ship::type_list_crew::const_iterator Ship::crewEnd() const
+{
+    return m_crew.end();
+}
+
 std::string Ship::toJson() const
 {
     std::ostringstream res;
@@ -43,11 +54,8 @@ std::string Ship::toJson() const
     return res.str() + "] }";
 }
 
-#include <QDebug>
-
 Ship Ship::fromJson(const std::string& json) throw(std::invalid_argument)
 {
-    qDebug() << QString::fromStdString(json);
     AnyMap map = JSon::fromJson(json).toMap();
     return fromJson(map);
 }
@@ -82,8 +90,8 @@ Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
     i = map.find("starting_spot");
     if(i == map.end()) throw std::invalid_argument("Unable to find value for starting_spot");
     AnyMap m = i->second.toMap();
-    res.m_startingSpot.setX(m["x"].toInt8());
-    res.m_startingSpot.setY(m["y"].toInt8());
+    res.m_startingSpot.setX(m["x"].toDouble());
+    res.m_startingSpot.setY(m["y"].toDouble());
 
     i = map.find("crew");
     if(i == map.end()) throw std::invalid_argument("Unable to find value for crew");
@@ -91,17 +99,68 @@ Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
     for(AnyList::const_iterator i = lst.begin(); i != lst.end(); ++i)
     {
         CrewMember cm = CrewMember::fromJson(i->toMap());
-        res.m_crew.push_back(cm);
+        res.add(cm);
     }
 
     return res;
 }
 
-const Room& Ship::getRoomByCoord(const Point& point) const throw(std::invalid_argument)
+const Room& Ship::getRoomByCoord(const PointF& point) const throw(std::invalid_argument)
 {
     for(type_list_rooms::const_iterator i = m_rooms.begin(); i != m_rooms.end(); ++i)
     {
         if(i->contains(point)) return *i;
     }
     throw std::invalid_argument("Unable to find a room for this point");
+}
+
+namespace {
+class CompareByLengthToSquare {
+public:
+    CompareByLengthToSquare(const PointF& center): d_center(center)
+    {}
+
+    bool operator()(const PointF& p1, const PointF& p2) const
+    {
+        return (p1-d_center).dot() < (p2-d_center).dot();
+    }
+
+private:
+    const PointF& d_center;
+};
+}
+
+#include <QDebug>
+
+void Ship::add(CrewMember crewMember)
+{
+    if(crewMember.position() == Point(-1, -1))
+    {
+        if(isThereCrewAtPosition(m_startingSpot))
+        {
+            //starting spot already taken, looking for the closest free one
+            const Room& room = getRoomByCoord(m_startingSpot);
+            Room::type_list_coords squares(room.squaresBegin(), room.squaresEnd());
+            assert(!squares.empty());
+            squares.sort(CompareByLengthToSquare(m_startingSpot));
+            Point p(m_startingSpot.x(), m_startingSpot.y());
+            while(!squares.empty() && isThereCrewAtPosition(squares.front())) squares.pop_front();
+            if(squares.empty())
+            {
+                qDebug() << "no square left!";
+                assert(0 && "TODO"); //TODO sort this out
+            }
+            else
+                crewMember.setPosition(squares.front() + PointF(0.5, 0.5));
+        }
+        else
+            crewMember.setPosition(m_startingSpot);
+    }
+    m_crew.push_back(crewMember);
+}
+
+bool Ship::isThereCrewAtPosition(const PointF& position) const
+{
+    type_list_crew::const_iterator i = std::find_if(m_crew.begin(), m_crew.end(), ComparatorMethodValue<CrewMember, PointF>(&CrewMember::position, position));
+    return i != m_crew.end();
 }

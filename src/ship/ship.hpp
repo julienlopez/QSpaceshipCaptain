@@ -23,20 +23,27 @@ public:
     type_list_doors::const_iterator doorsBegin() const;
     type_list_doors::const_iterator doorsEnd() const;
 
+    type_list_crew::const_iterator crewBegin() const;
+    type_list_crew::const_iterator crewEnd() const;
+
     //Json methods
     std::string toJson() const;
     static Ship fromJson(const std::string& json) throw(std::invalid_argument);
     static Ship fromJson(const AnyMap& map) throw(std::invalid_argument);
 
 //    Room& getRoomByCoord(const Point& point) throw(std::invalid_argument);
-    const Room& getRoomByCoord(const Point& point) const throw(std::invalid_argument);
+    const Room& getRoomByCoord(const PointF& point) const throw(std::invalid_argument);
+
+    void add(CrewMember crewMember);
+
+    bool isThereCrewAtPosition(const PointF& position) const;
 
 private:
     std::string m_name;
     type_list_rooms m_rooms;
     type_list_doors m_doors;
     type_list_crew m_crew;
-    Point m_startingSpot;
+    PointF m_startingSpot;
 };
 
 #endif // SHIP_HPP
