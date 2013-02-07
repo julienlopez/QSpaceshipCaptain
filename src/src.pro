@@ -41,5 +41,10 @@ HEADERS  += mainwindow.hpp \
     utils/point.hpp \
     pathinghelper.hpp \
     ship/door.hpp \
-    ship/crewmember.hpp
+    ship/crewmember.hpp \
+    utils/typetrait.hpp \
+    utils/select.hpp \
+    utils/ispointer.hpp \
+    utils/comparator.hpp \
+    utils/comparatormethodvalue.hpp
 
