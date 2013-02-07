@@ -41,6 +41,8 @@ public:
 
     bool contains(const Point& point) const;
 
+    std::size_t squareNumber() const;
+
 private:
     sp_system m_system;
     type_list_coords m_squares;
