@@ -3,6 +3,7 @@
 
 #include "room.hpp"
 #include "door.hpp"
+#include "crewmember.hpp"
 
 class Ship : public Size<uint8_t>
 {
@@ -10,6 +11,7 @@ public:
     typedef Size<uint8_t> Size8;
     typedef std::list<Room> type_list_rooms;
     typedef std::list<Door> type_list_doors;
+    typedef std::list<CrewMember> type_list_crew;
 
     Ship(const std::string& name = std::string(), const Size8& size = Size8(10, 10));
 
@@ -33,6 +35,8 @@ private:
     std::string m_name;
     type_list_rooms m_rooms;
     type_list_doors m_doors;
+    type_list_crew m_crew;
+    Point m_startingSpot;
 };
 
 #endif // SHIP_HPP

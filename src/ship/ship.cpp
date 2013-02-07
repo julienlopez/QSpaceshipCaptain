@@ -43,8 +43,11 @@ std::string Ship::toJson() const
     return res.str() + "] }";
 }
 
+#include <QDebug>
+
 Ship Ship::fromJson(const std::string& json) throw(std::invalid_argument)
 {
+    qDebug() << QString::fromStdString(json);
     AnyMap map = JSon::fromJson(json).toMap();
     return fromJson(map);
 }
@@ -66,15 +69,30 @@ Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
 
     i = map.find("rooms");
     if(i == map.end()) throw std::invalid_argument("Unable to find value for rooms");
-    AnyList rooms = i->second.toList();
-    for(AnyList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
+    AnyList lst = i->second.toList();
+    for(AnyList::const_iterator i = lst.begin(); i != lst.end(); ++i)
         res.m_rooms.push_back(Room::fromJson(i->toMap()));
 
     i = map.find("doors");
     if(i == map.end()) throw std::invalid_argument("Unable to find value for doors");
-    AnyList doors = i->second.toList();
-    for(AnyList::const_iterator i = doors.begin(); i != doors.end(); ++i)
+    lst = i->second.toList();
+    for(AnyList::const_iterator i = lst.begin(); i != lst.end(); ++i)
         res.m_doors.push_back(Door::fromJson(i->toMap()));
+
+    i = map.find("starting_spot");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for starting_spot");
+    AnyMap m = i->second.toMap();
+    res.m_startingSpot.setX(m["x"].toInt8());
+    res.m_startingSpot.setY(m["y"].toInt8());
+
+    i = map.find("crew");
+    if(i == map.end()) throw std::invalid_argument("Unable to find value for crew");
+    lst = i->second.toList();
+    for(AnyList::const_iterator i = lst.begin(); i != lst.end(); ++i)
+    {
+        CrewMember cm = CrewMember::fromJson(i->toMap());
+        res.m_crew.push_back(cm);
+    }
 
     return res;
 }

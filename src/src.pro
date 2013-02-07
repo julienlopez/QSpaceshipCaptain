@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     utils/stringlist.cpp \
     utils/point.cpp \
     pathinghelper.cpp \
-    ship/door.cpp
+    ship/door.cpp \
+    ship/crewmember.cpp
 
 HEADERS  += mainwindow.hpp \
     ship/ship.hpp \
@@ -39,5 +40,6 @@ HEADERS  += mainwindow.hpp \
     utils/stringlist.hpp \
     utils/point.hpp \
     pathinghelper.hpp \
-    ship/door.hpp
+    ship/door.hpp \
+    ship/crewmember.hpp
 

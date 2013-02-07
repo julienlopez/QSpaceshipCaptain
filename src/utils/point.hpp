@@ -20,6 +20,14 @@ public:
     {
         return m_y;
     }
+    void setX(T x)
+    {
+        m_x = x;
+    }
+    void setY(T y)
+    {
+        m_y = y;
+    }
 
     Point2D operator+(const Point2D& p) const
     {
