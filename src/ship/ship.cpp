@@ -54,13 +54,13 @@ std::string Ship::toJson() const
     return res.str() + "] }";
 }
 
-Ship Ship::fromJson(const std::string& json) throw(std::invalid_argument)
+Ship Ship::fromJson(const std::string& json)
 {
     AnyMap map = JSon::fromJson(json).toMap();
     return fromJson(map);
 }
 
-Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
+Ship Ship::fromJson(const AnyMap& map)
 {
     Ship res;
     AnyMap::const_iterator i = map.find("name");
@@ -105,7 +105,7 @@ Ship Ship::fromJson(const AnyMap& map) throw(std::invalid_argument)
     return res;
 }
 
-const Room& Ship::getRoomByCoord(const PointF& point) const throw(std::invalid_argument)
+const Room& Ship::getRoomByCoord(const PointF& point) const
 {
     for(type_list_rooms::const_iterator i = m_rooms.begin(); i != m_rooms.end(); ++i)
     {
@@ -159,8 +159,21 @@ void Ship::add(CrewMember crewMember)
     m_crew.push_back(crewMember);
 }
 
+CrewMember& Ship::memberByName(const std::string& name) {
+    for(type_list_crew::iterator i = m_crew.begin(); i != m_crew.end(); ++i) {
+        if(i->name() == name) return *i;
+    }
+    throw std::invalid_argument("No crew member with name " + name);
+}
+
 bool Ship::isThereCrewAtPosition(const PointF& position) const
 {
     type_list_crew::const_iterator i = std::find_if(m_crew.begin(), m_crew.end(), ComparatorMethodValue<CrewMember, PointF>(&CrewMember::position, position));
     return i != m_crew.end();
 }
+
+void Ship::update(double dt)
+{
+    std::for_each(m_crew.begin(), m_crew.end(), std::bind(std::mem_fun_ref(&CrewMember::update), std::placeholders::_1, dt));
+}
+

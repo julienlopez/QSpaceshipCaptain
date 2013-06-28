@@ -14,14 +14,14 @@ std::string Room::toJson() const
     return JSon::toJson(map);
 }
 
-Room Room::fromJson(const std::string& json) throw(std::invalid_argument)
+Room Room::fromJson(const std::string& json)
 {
     Any any = JSon::fromJson(json);
     AnyMap map = any.toMap();
     return fromJson(map);
 }
 
-Room Room::fromJson(const AnyMap& map) throw(std::invalid_argument)
+Room Room::fromJson(const AnyMap& map)
 {
     Room res;
     AnyMap::const_iterator i = map.find("squares");

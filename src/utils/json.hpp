@@ -17,26 +17,32 @@ public:
     static std::string toJson(const std::string& str);
     static std::string toJson(int i);
 
-    static Any fromJson(std::string json) throw(std::invalid_argument);
+    /**
+    * \throws std::invalid_argument if the string is not a valid.
+    */
+    static Any fromJson(std::string json);
 
 private:
     /**
-      * \brief parse a json string to a AnyMap
-      * The string must start with { and the end with }
+    * \brief parse a json string to a AnyMap
+    * The string must start with { and the end with }
+    * \throws std::invalid_argument if the string is not a valid.
     */
-    static AnyMap parseToMap(std::string json) throw(std::invalid_argument);
+    static AnyMap parseToMap(std::string json);
 
     /**
-      * \brief parse a json string to a AnyList
-      * The string must start with [ and the end with ]
+    * \brief parse a json string to a AnyList
+    * The string must start with [ and the end with ]
+    * \throws std::invalid_argument if the string is not a valid.
     */
-    static AnyList parseToList(std::string json) throw(std::invalid_argument);
+    static AnyList parseToList(std::string json);
 
     /**
-      * \brief parse a json string to a Any
-      * The string must be a basic json value: a string, a number, true, false or null
+    * \brief parse a json string to a Any
+    * The string must be a basic json value: a string, a number, true, false or null
+    * \throws std::invalid_argument if the string is not a valid.
     */
-    static Any parseValue(std::string json) throw(std::invalid_argument);
+    static Any parseValue(std::string json);
 
     static void clearBothEnds(std::string& str);
     static void eraseFirst(std::string& str);

@@ -5,7 +5,7 @@
 #include "door.hpp"
 #include "crewmember.hpp"
 
-class Ship : public Size<uint8_t>
+class Ship : public Size<uint8_t>, public iUpdateable
 {
 public:
     typedef Size<uint8_t> Size8;
@@ -27,16 +27,37 @@ public:
     type_list_crew::const_iterator crewEnd() const;
 
     //Json methods
+    /**
+    * \brief returns a json string describing the ship.
+    */
     std::string toJson() const;
-    static Ship fromJson(const std::string& json) throw(std::invalid_argument);
-    static Ship fromJson(const AnyMap& map) throw(std::invalid_argument);
 
-//    Room& getRoomByCoord(const Point& point) throw(std::invalid_argument);
-    const Room& getRoomByCoord(const PointF& point) const throw(std::invalid_argument);
+    /**
+    * \brief Parse a ship from a json string.
+    * \throws std::invalid_argument if the string's format is invalid.
+    */
+    static Ship fromJson(const std::string& json);
+
+    /**
+    * \brief Parse a ship from a variant map.
+    * \throws std::invalid_argument if the map's content is invalid.
+    */
+    static Ship fromJson(const AnyMap& map);
+
+    /**
+    * \brief search the room at the given coordinates.
+    * \arg \c point coordinates of the room.
+    * \returns the room if found.
+    * \throws std::invalid_argument exception thrown if no room exists at the given coordinates.
+    */
+    const Room& getRoomByCoord(const PointF& point) const;
 
     void add(CrewMember crewMember);
+    CrewMember& memberByName(const std::string& name);
 
     bool isThereCrewAtPosition(const PointF& position) const;
+
+    virtual void update(double dt) override;
 
 private:
     std::string m_name;

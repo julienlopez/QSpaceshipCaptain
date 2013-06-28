@@ -22,7 +22,11 @@ SOURCES += main.cpp\
     utils/point.cpp \
     pathinghelper.cpp \
     ship/door.cpp \
-    ship/crewmember.cpp
+    ship/crewmember.cpp \
+    crewwidget.cpp \
+    crewmemberwidget.cpp \
+    ship/graph/graphhelper.cpp \
+    ship/graph/shipgraph.cpp
 
 HEADERS  += mainwindow.hpp \
     ship/ship.hpp \
@@ -46,5 +50,11 @@ HEADERS  += mainwindow.hpp \
     utils/select.hpp \
     utils/ispointer.hpp \
     utils/comparator.hpp \
-    utils/comparatormethodvalue.hpp
+    utils/comparatormethodvalue.hpp \
+    crewwidget.hpp \
+    crewmemberwidget.hpp \
+    utils/typedefs.hpp \
+    utils/iupdateable.hpp \
+    ship/graph/graphhelper.hpp \
+    ship/graph/shipgraph.hpp
 

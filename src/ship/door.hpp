@@ -24,8 +24,18 @@ public:
 
     //Json methods
     std::string toJson() const;
-    static Door fromJson(const std::string& json) throw(std::invalid_argument);
-    static Door fromJson(const AnyMap& map) throw(std::invalid_argument);
+
+    /**
+    * \brief Parse a door from a json string.
+    * \throws std::invalid_argument if the string's format is invalid.
+    */
+    static Door fromJson(const std::string& json);
+
+    /**
+    * \brief Parse a door from a variant map.
+    * \throws std::invalid_argument if the map's content is invalid.
+    */
+    static Door fromJson(const AnyMap& map);
 
 private:
     bool m_isOpen;

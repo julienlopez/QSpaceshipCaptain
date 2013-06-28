@@ -8,15 +8,14 @@
 
 #include <list>
 #include <stdexcept>
-
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class System;
 
 class Room
 {
 public:
-    typedef boost::shared_ptr<System> sp_system;
+    typedef std::shared_ptr<System> sp_system;
 
     typedef std::list<Point> type_list_coords;
 
@@ -24,8 +23,17 @@ public:
 
     std::string toJson() const;
 
-    static Room fromJson(const std::string& json) throw(std::invalid_argument);
-    static Room fromJson(const AnyMap& map) throw(std::invalid_argument);
+    /**
+    * \brief Parse a room from a json string.
+    * \throws std::invalid_argument if the string's format is invalid.
+    */
+    static Room fromJson(const std::string& json);
+
+    /**
+    * \brief Parse a room from a variant map.
+    * \throws std::invalid_argument if the map's content is invalid.
+    */
+    static Room fromJson(const AnyMap& map);
 
     void setSquares(const type_list_coords& squares);
 

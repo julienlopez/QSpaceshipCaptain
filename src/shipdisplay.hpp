@@ -1,7 +1,7 @@
 #ifndef SHIPDISPLAY_HPP
 #define SHIPDISPLAY_HPP
 
-#include <boost/weak_ptr.hpp>
+#include <memory>
 
 #include <QWidget>
 
@@ -15,25 +15,33 @@ class ShipDisplay : public QWidget
     Q_OBJECT
 
 public:
-    typedef boost::weak_ptr<Ship> wp_ship;
+    typedef std::weak_ptr<Ship> wp_ship;
 
     explicit ShipDisplay(QWidget *parent = 0);
 
     void setShip(wp_ship ship);
     
 protected:
+    void mousePressEvent(QMouseEvent* evt);
     void paintEvent(QPaintEvent* evt);
 
 signals:
-    
+    void memberSelection(const CrewMember& crewMember);
+
 public slots:
+    void selectCrewMember(const std::string& name);
+    void updateShip();
 
 private:
     wp_ship m_ship;
+    std::string m_currentCrewMemberSelected;
+    QTimer* m_updateTimer;
 
     void drawRoom(QPainter& p, const Room& room) const;
     void drawDoor(QPainter& p, const Door& room) const;
     void drawCrew(QPainter& p, const CrewMember& crewMember) const;
+
+    static constexpr double s_dt = .1;
     
 };
 

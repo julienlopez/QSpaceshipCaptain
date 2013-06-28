@@ -28,3 +28,5 @@ win32 {
     INCLUDEPATH += C:\prog\boost_1_51_0
     #LIBS += -LD:\Users\Julien\Documents\c++\StormLib
 }
+
+QMAKE_CXXFLAGS += -std=c++11

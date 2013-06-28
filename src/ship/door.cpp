@@ -51,22 +51,18 @@ void Door::close()
 
 std::string Door::toJson() const
 {
-//    static AnyMap map;
-//    map["from"] = Any(m_from);
-//    map["to"] = Any(m_to);
-//    return JSon::toJson(map);
     std::ostringstream oss;
     oss << "{ \"from\" : { \"x\" : " << m_from.x() << ", \"y\" : " << m_from.y() << " }, \"to\" : { \"x\" : " << m_from.x() << ", \"y\" : " << m_from.y() << " } }";
     return oss.str();
 }
 
-Door Door::fromJson(const std::string& json) throw(std::invalid_argument)
+Door Door::fromJson(const std::string& json)
 {
     Any map = JSon::fromJson(json);
     return fromJson(map.toMap());
 }
 
-Door Door::fromJson(const AnyMap& map) throw(std::invalid_argument)
+Door Door::fromJson(const AnyMap& map)
 {
     Door res;
 

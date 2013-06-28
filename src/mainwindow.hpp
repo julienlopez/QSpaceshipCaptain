@@ -2,8 +2,8 @@
 #define MAINWINDOW_HPP
 
 #include <QtGui/QMainWindow>
+#include <memory>
 
-#include <boost/shared_ptr.hpp>
 class Ship;
 
 class MainWindow : public QMainWindow
@@ -15,7 +15,7 @@ public:
     ~MainWindow();
 
 private:
-    boost::shared_ptr<Ship> m_ship; //temp
+    std::shared_ptr<Ship> m_ship; //temp
 };
 
 #endif // MAINWINDOW_HPP

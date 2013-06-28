@@ -1,7 +1,10 @@
 #include "shipdisplay.hpp"
 #include "ship/ship.hpp"
+#include "pathinghelper.hpp"
 
 #include <QPainter>
+#include <QMouseEvent>
+#include <QTimer>
 
 ShipDisplay::ShipDisplay(QWidget *parent) :
     QWidget(parent)
@@ -11,6 +14,11 @@ ShipDisplay::ShipDisplay(QWidget *parent) :
     QPalette p = palette();
     p.setColor(QPalette::Window, Qt::black);
     setPalette(p);
+
+    m_updateTimer = new QTimer(this);
+    m_updateTimer->setInterval(1000*s_dt);
+    connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(updateShip()));
+    m_updateTimer->start();
 }
 
 void ShipDisplay::setShip(wp_ship ship)
@@ -18,10 +26,48 @@ void ShipDisplay::setShip(wp_ship ship)
     m_ship = ship;
 }
 
+void ShipDisplay::mousePressEvent(QMouseEvent* evt)
+{
+    auto ship = m_ship.lock();
+    if(!ship) return;
+
+    QSize screenSize = size() - QSize(20, 20);
+    double ratioX = ((double)screenSize.width()) / ship->width();
+    double ratioY = ((double)screenSize.height()) / ship->height();
+    double ratio = std::min(ratioX, ratioY);
+    QPoint marge(width() - ratio*ship->width(), height() - ratio*ship->height());
+    marge /= 2;
+    QPointF pos = evt->posF() - marge;
+    pos /= ratio;
+    PointF posClick(pos.x(), pos.y());
+
+    if(evt->button() == Qt::LeftButton) {
+        for(Ship::type_list_crew::const_iterator i = ship->crewBegin(); i != ship->crewEnd(); ++i)
+        {
+            if((i->position()-posClick).dot() <= 0.2*0.2)
+            {
+                m_currentCrewMemberSelected = i->name();
+                emit memberSelection(*i);
+                update();
+                return;
+            }
+        }
+    } else if(evt->button() == Qt::RightButton) {
+        try {
+            CrewMember& cm = ship->memberByName(m_currentCrewMemberSelected);
+            PointF start = cm.position();
+            utils::type_list_points path = PathingHelper::simplePathFromTo(*ship, start, Point(posClick));
+            cm.followPath(path);
+        }
+        catch(std::invalid_argument& ex)
+        {}
+    }
+}
+
 void ShipDisplay::paintEvent(QPaintEvent* evt)
 {
     Q_UNUSED(evt);
-    boost::shared_ptr<Ship> ship = m_ship.lock();
+    auto ship = m_ship.lock();
     if(!ship) return;
     QSize screenSize = size() - QSize(20, 20);
     double ratioX = ((double)screenSize.width()) / ship->width();
@@ -69,8 +115,31 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
     //drawing the crew
     for(Ship::type_list_crew::const_iterator i = ship->crewBegin(); i != ship->crewEnd(); ++i)
     {
-        drawCrew(p, *i);
+        if(i->name() == m_currentCrewMemberSelected)
+        {
+            p.save();
+            p.setPen(Qt::red);
+            drawCrew(p, *i);
+            p.restore();
+        }
+        else
+        {
+            drawCrew(p, *i);
+        }
     }
+}
+
+void ShipDisplay::selectCrewMember(const std::string& name)
+{
+    m_currentCrewMemberSelected = name;
+    update();
+}
+void ShipDisplay::updateShip()
+{
+    auto ship = m_ship.lock();
+    if(!ship) return;
+    ship->update(s_dt);
+    update();
 }
 
 void ShipDisplay::drawRoom(QPainter& p, const Room& room) const

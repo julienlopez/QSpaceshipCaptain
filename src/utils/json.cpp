@@ -52,7 +52,7 @@ std::string JSon::toJson(int i)
     return oss.str();
 }
 
-Any JSon::fromJson(std::string json) throw(std::invalid_argument)
+Any JSon::fromJson(std::string json)
 {
     clearBothEnds(json);
     if(json.empty()) return Any();
@@ -65,7 +65,7 @@ Any JSon::fromJson(std::string json) throw(std::invalid_argument)
     return parseValue(json);
 }
 
-AnyMap JSon::parseToMap(std::string json) throw(std::invalid_argument)
+AnyMap JSon::parseToMap(std::string json)
 {
     if(json.size() < 2 || *json.begin() != '{' || json[json.length()-1] != '}')
     {
@@ -100,7 +100,7 @@ AnyMap JSon::parseToMap(std::string json) throw(std::invalid_argument)
     return res;
 }
 
-AnyList JSon::parseToList(std::string json) throw(std::invalid_argument)
+AnyList JSon::parseToList(std::string json)
 {
     if(json.size() < 2 || *json.begin() != '[' || json[json.length()-1] != ']')
     {
@@ -119,7 +119,7 @@ AnyList JSon::parseToList(std::string json) throw(std::invalid_argument)
     return res;
 }
 
-Any JSon::parseValue(std::string json) throw(std::invalid_argument)
+Any JSon::parseValue(std::string json)
 {
     if(json == "false") return false;
     if(json == "true") return true;
