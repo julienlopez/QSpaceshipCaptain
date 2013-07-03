@@ -5,6 +5,8 @@
 #include "door.hpp"
 #include "crewmember.hpp"
 
+#include <functional>
+
 class Ship : public Size<uint8_t>, public iUpdateable
 {
 public:
@@ -20,11 +22,13 @@ public:
     type_list_rooms::const_iterator roomsBegin() const;
     type_list_rooms::const_iterator roomsEnd() const;
 
-    type_list_doors::const_iterator doorsBegin() const;
-    type_list_doors::const_iterator doorsEnd() const;
+//    type_list_doors::const_iterator doorsBegin() const;
+//    type_list_doors::const_iterator doorsEnd() const;
+    void foreachDoor(std::function<void (const Door&)>& functor) const;
 
     type_list_crew::const_iterator crewBegin() const;
     type_list_crew::const_iterator crewEnd() const;
+    void foreachCrew(std::function<void (const CrewMember&)>& functor) const;
 
     //Json methods
     /**

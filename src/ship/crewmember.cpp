@@ -2,6 +2,7 @@
 #include <utils/json.hpp>
 
 #include <sstream>
+#include <cassert>
 
 CrewMember::CrewMember(const std::string& name): m_name(name), m_position(-1, -1), m_speed(1)
 {}
@@ -52,19 +53,43 @@ void CrewMember::followPath(const utils::type_list_points& points)
 {
     m_path = points;
 }
+bool CrewMember::hasNextPosition() const
+{
+    return !m_path.empty();
+}
+
+const PointF& CrewMember::nextPosition() const
+{
+    if(m_path.empty()) throw std::logic_error("No point to return");
+    return m_path.front();
+}
+
+const PointF& CrewMember::finalPosition() const
+{
+    if(m_path.empty()) throw std::logic_error("No point to return");
+    return m_path.back();
+}
 
 void CrewMember::update(double dt)
 {
     if(m_path.empty()) return;
     Vector direction(m_path.front(), position());
 
+    double leftToGo = m_speed * dt;
     if(direction.length() < m_speed * dt)
     {
+        leftToGo -= direction.length();
+        m_position = m_path.front();
         m_path.pop_front();
-        return;
+
+        if(m_path.empty()) return;
+
+        direction = Vector(m_path.front(), position());
+
+        assert(direction.length() > leftToGo); //TODO will crash if a segment is smaller than the distance to go through. Should be good for now while dt is small enough.
     }
 
     direction.normalize();
-    direction *= m_speed * dt;
+    direction *= leftToGo;
     m_position += direction;
 }

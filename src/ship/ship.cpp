@@ -22,14 +22,19 @@ Ship::type_list_rooms::const_iterator Ship::roomsEnd() const
     return m_rooms.end();
 }
 
-Ship::type_list_doors::const_iterator Ship::doorsBegin() const
-{
-    return m_doors.begin();
-}
+//Ship::type_list_doors::const_iterator Ship::doorsBegin() const
+//{
+//    return m_doors.begin();
+//}
 
-Ship::type_list_doors::const_iterator Ship::doorsEnd() const
+//Ship::type_list_doors::const_iterator Ship::doorsEnd() const
+//{
+//    return m_doors.end();
+//}
+
+void Ship::foreachDoor(std::function<void (const Door&)>& functor) const
 {
-    return m_doors.end();
+    std::for_each(m_doors.begin(), m_doors.end(), functor);
 }
 
 Ship::type_list_crew::const_iterator Ship::crewBegin() const
@@ -40,6 +45,11 @@ Ship::type_list_crew::const_iterator Ship::crewBegin() const
 Ship::type_list_crew::const_iterator Ship::crewEnd() const
 {
     return m_crew.end();
+}
+
+void Ship::foreachCrew(std::function<void (const CrewMember&)>& functor) const
+{
+    std::for_each(m_crew.begin(), m_crew.end(), functor);
 }
 
 std::string Ship::toJson() const

@@ -29,18 +29,19 @@ void ShipGraph::addEdge(const Point& p1, const Point& p2, double length)
 
 utils::type_list_points ShipGraph::shortestPath(const Point& from, const Point& to)
 {
-    utils::type_list_points res;
-
     std::vector<vertex_descriptor> p(num_vertices(d_graph));
     std::vector<double> d(num_vertices(d_graph));
 
     boost::dijkstra_shortest_paths(d_graph, d_mid2vertex[from], boost::predecessor_map(&p[0]).distance_map(&d[0]));
 
-    std::vector<vertex_descriptor>::iterator it = std::find(p.begin(), p.end(), to);
-    assert(it != p.end());
-
-    double distance = d[std::distance(p.begin(), it)];
-    cerr << distance << endl;
+    utils::type_list_points res;
+    vertex_descriptor v = d_mid2vertex[to];
+    vertex_descriptor first = d_mid2vertex[from];
+    while(v != first)
+    {
+        res.push_front(d_graph[v] + PointF(.5, .5));
+        v = p[v];
+    }
 
     return res;
 }

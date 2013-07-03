@@ -100,6 +100,10 @@ bool Room::contains(const PointF& point) const
     return std::find_if(m_squares.begin(), m_squares.end(), PointInRoom(point)) != m_squares.end();
 }
 
+bool Room::isSquareInRoom(const Point& point) const {
+    return std::find(m_squares.begin(), m_squares.end(), point) != m_squares.end();
+}
+
 std::size_t Room::squareNumber() const
 {
     return m_squares.size();

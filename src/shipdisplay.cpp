@@ -6,6 +6,8 @@
 #include <QMouseEvent>
 #include <QTimer>
 
+#include <functional>
+
 ShipDisplay::ShipDisplay(QWidget *parent) :
     QWidget(parent)
 {
@@ -64,6 +66,13 @@ void ShipDisplay::mousePressEvent(QMouseEvent* evt)
     }
 }
 
+namespace {
+QPointF toQPointF(const PointF& p)
+{
+    return QPointF(p.x(), p.y());
+}
+}
+
 void ShipDisplay::paintEvent(QPaintEvent* evt)
 {
     Q_UNUSED(evt);
@@ -106,27 +115,13 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
     pen = p.pen();
     pen.setWidthF(0.15);
     p.setPen(pen);
-    for(Ship::type_list_doors::const_iterator i = ship->doorsBegin(); i != ship->doorsEnd(); ++i)
-    {
-        drawDoor(p, *i);
-    }
+    std::function<void (const Door&)> f1 = std::bind(&drawDoor, std::ref(p), std::placeholders::_1);
+    ship->foreachDoor(f1);
     p.restore();
 
     //drawing the crew
-    for(Ship::type_list_crew::const_iterator i = ship->crewBegin(); i != ship->crewEnd(); ++i)
-    {
-        if(i->name() == m_currentCrewMemberSelected)
-        {
-            p.save();
-            p.setPen(Qt::red);
-            drawCrew(p, *i);
-            p.restore();
-        }
-        else
-        {
-            drawCrew(p, *i);
-        }
-    }
+    std::function<void (const CrewMember&)> f2 = std::bind(&drawCrew, std::ref(p), std::placeholders::_1, std::ref(m_currentCrewMemberSelected));
+    ship->foreachCrew(f2);
 }
 
 void ShipDisplay::selectCrewMember(const std::string& name)
@@ -142,7 +137,7 @@ void ShipDisplay::updateShip()
     update();
 }
 
-void ShipDisplay::drawRoom(QPainter& p, const Room& room) const
+void ShipDisplay::drawRoom(QPainter& p, const Room& room)
 {
     for(Room::type_list_coords::const_iterator j = room.squaresBegin(); j != room.squaresEnd(); ++j)
     {
@@ -162,7 +157,7 @@ void ShipDisplay::drawRoom(QPainter& p, const Room& room) const
     p.restore();
 }
 
-void ShipDisplay::drawDoor(QPainter& p, const Door& room) const
+void ShipDisplay::drawDoor(QPainter& p, const Door& room)
 {
     PointF from = room.from() + PointF(0.5, 0.5);
     PointF to = room.to() + PointF(0.5, 0.5);
@@ -175,14 +170,25 @@ void ShipDisplay::drawDoor(QPainter& p, const Door& room) const
     p.drawLine(line);
 }
 
-namespace {
-QPointF toQPointF(const PointF& p)
+void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember, const std::string& currentCrewMemberSelected)
 {
-    return QPointF(p.x(), p.y());
-}
-}
-
-void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember) const
-{
-    p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
+    if(crewMember.hasNextPosition()) {
+        p.save();
+        p.setPen(QColor(40, 150, 30, 200));
+        QPointF pos = toQPointF(crewMember.finalPosition());
+        p.drawLine(pos, toQPointF(crewMember.position()));
+        p.drawEllipse(pos, .1, .1);
+        p.restore();
+    }
+    if(crewMember.name() == currentCrewMemberSelected)
+    {
+        p.save();
+        p.setPen(Qt::red);
+        p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
+        p.restore();
+    }
+    else
+    {
+        p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
+    }
 }

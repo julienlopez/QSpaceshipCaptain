@@ -38,6 +38,20 @@ public:
 
     void followPath(const utils::type_list_points& points);
 
+    bool hasNextPosition() const;
+
+    /**
+    * \brief returns the next position the crewmember is headed to.
+    * \throw std::logic_error if the crewmember is not going anywhere.
+    */
+    const PointF& nextPosition() const;
+
+    /**
+    * \brief returns the final position the crewmember is headed to.
+    * \throw std::logic_error if the crewmember is not going anywhere.
+    */
+    const PointF& finalPosition() const;
+
     virtual void update(double dt) override;
 
 private:

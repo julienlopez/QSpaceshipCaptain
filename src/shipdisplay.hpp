@@ -37,9 +37,9 @@ private:
     std::string m_currentCrewMemberSelected;
     QTimer* m_updateTimer;
 
-    void drawRoom(QPainter& p, const Room& room) const;
-    void drawDoor(QPainter& p, const Door& room) const;
-    void drawCrew(QPainter& p, const CrewMember& crewMember) const;
+    static void drawRoom(QPainter& p, const Room& room);
+    static void drawDoor(QPainter& p, const Door& room);
+    static void drawCrew(QPainter& p, const CrewMember& crewMember, const std::string& currentCrewMemberSelected);
 
     static constexpr double s_dt = .1;
     

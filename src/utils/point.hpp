@@ -93,6 +93,11 @@ public:
         return m_x == p.m_x && m_y == p.m_y;
     }
 
+    bool operator!=(const Point2D& p) const noexcept
+    {
+        return !operator==(p);
+    }
+
     double angle() const noexcept
     {
         double a = atan2(y(),x());

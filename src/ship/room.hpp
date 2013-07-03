@@ -47,7 +47,15 @@ public:
       */
     type_list_coords computeWalls() const;
 
+    /**
+    * \brief checks if a geometric position is inside the room.
+    */
     bool contains(const PointF &point) const;
+
+    /**
+    * \brief checks if the room coordinate correspond to a square in the room.
+    */
+    bool isSquareInRoom(const Point& point) const;
 
     std::size_t squareNumber() const;
 
