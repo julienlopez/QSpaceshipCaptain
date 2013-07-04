@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <memory>
 
 class Ship;

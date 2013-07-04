@@ -39,7 +39,11 @@ void ShipDisplay::mousePressEvent(QMouseEvent* evt)
     double ratio = std::min(ratioX, ratioY);
     QPoint marge(width() - ratio*ship->width(), height() - ratio*ship->height());
     marge /= 2;
+#if QT_VERSION >= 50000
+    QPointF pos = evt->localPos() - marge;
+#else
     QPointF pos = evt->posF() - marge;
+#endif
     pos /= ratio;
     PointF posClick(pos.x(), pos.y());
 
@@ -89,6 +93,12 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
     p.translate(marge.x(), marge.y());
     p.scale(ratio, ratio);
 
+#if QT_VERSION >= 50000
+    QPen penTmp = p.pen();
+    penTmp.setWidthF(.1);
+    p.setPen(penTmp);
+#endif
+
     //drawing the ship
     p.save();
     p.setPen(Qt::lightGray);
@@ -101,7 +111,9 @@ void ShipDisplay::paintEvent(QPaintEvent* evt)
 
     //drawing the rooms
     p.save();
-    p.setPen(Qt::black);
+    pen = p.pen();
+    pen.setColor(Qt::black);
+    p.setPen(pen);
     p.setBrush(Qt::white);
     for(Ship::type_list_rooms::const_iterator i = ship->roomsBegin(); i != ship->roomsEnd(); ++i)
     {
@@ -174,7 +186,9 @@ void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember, const std:
 {
     if(crewMember.hasNextPosition()) {
         p.save();
-        p.setPen(QColor(40, 150, 30, 200));
+        QPen pen = p.pen();
+        pen.setColor(QColor(40, 150, 30, 200));
+        p.setPen(pen);
         QPointF pos = toQPointF(crewMember.finalPosition());
         p.drawLine(pos, toQPointF(crewMember.position()));
         p.drawEllipse(pos, .1, .1);
@@ -183,7 +197,9 @@ void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember, const std:
     if(crewMember.name() == currentCrewMemberSelected)
     {
         p.save();
-        p.setPen(Qt::red);
+        QPen pen = p.pen();
+        pen.setColor(Qt::red);
+        p.setPen(pen);
         p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
         p.restore();
     }
