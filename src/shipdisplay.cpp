@@ -1,12 +1,14 @@
 #include "shipdisplay.hpp"
 #include "ship/ship.hpp"
 #include "pathinghelper.hpp"
+#include "ship/systems/system.hpp"
 
 #include <QPainter>
 #include <QMouseEvent>
 #include <QTimer>
 
 #include <functional>
+#include <limits>
 
 ShipDisplay::ShipDisplay(QWidget *parent) :
     QWidget(parent)
@@ -39,7 +41,8 @@ void ShipDisplay::mousePressEvent(QMouseEvent* evt)
     double ratio = std::min(ratioX, ratioY);
     QPoint marge(width() - ratio*ship->width(), height() - ratio*ship->height());
     marge /= 2;
-#if QT_VERSION >= 50000
+
+#if QT_VERSION > 0x050000
     QPointF pos = evt->localPos() - marge;
 #else
     QPointF pos = evt->posF() - marge;
@@ -149,16 +152,37 @@ void ShipDisplay::updateShip()
     update();
 }
 
+#include <QDebug>
+
+namespace {
+    void setAlpha(QImage& im, double val)
+    {
+        for(int x = 0; x < im.width(); x++)
+            for(int y = 0; y < im.height(); y++)
+            {
+                QRgb pixel = im.pixel(x, y);
+                if(qAlpha(pixel) > 0)
+                    im.setPixel(x, y, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), val*qAlpha(pixel)));
+            }
+    }
+}
+
 void ShipDisplay::drawRoom(QPainter& p, const Room& room)
 {
+    p.save();
+    QPen pen = p.pen();
+    pen.setWidthF(0.05);
+    p.setPen(pen);
     for(Room::type_list_coords::const_iterator j = room.squaresBegin(); j != room.squaresEnd(); ++j)
     {
         p.drawRect(j->x(), j->y(), 1, 1);
     }
+    p.restore();
+
     p.save();
     p.setBrush(Qt::NoBrush);
     p.setPen(Qt::black);
-    QPen pen = p.pen();
+    pen = p.pen();
     pen.setWidthF(0.1);
     p.setPen(pen);
     Room::type_list_coords walls = room.computeWalls();
@@ -167,6 +191,17 @@ void ShipDisplay::drawRoom(QPainter& p, const Room& room)
         poly.push_back(QPointF(it->x(), it->y()));
     p.drawPolygon(poly);
     p.restore();
+
+    auto s = room.system();
+    auto system = s.lock();
+    if(system)
+    {
+        QImage im("images/icons/" + QString::fromStdString(system->icon()));
+        setAlpha(im, 0.5);
+        QPixmap pix = QPixmap::fromImage(im);
+        if(pix.isNull()) return;
+        p.drawPixmap(system->console().x(), system->console().y(), 1, 1, pix);
+    }
 }
 
 void ShipDisplay::drawDoor(QPainter& p, const Door& room)
@@ -188,23 +223,28 @@ void ShipDisplay::drawCrew(QPainter& p, const CrewMember& crewMember, const std:
         p.save();
         QPen pen = p.pen();
         pen.setColor(QColor(40, 150, 30, 200));
+        pen.setWidth(0.05);
         p.setPen(pen);
         QPointF pos = toQPointF(crewMember.finalPosition());
         p.drawLine(pos, toQPointF(crewMember.position()));
         p.drawEllipse(pos, .1, .1);
         p.restore();
     }
+
+    p.save();
+    QPen pen = p.pen();
+
     if(crewMember.name() == currentCrewMemberSelected)
     {
-        p.save();
-        QPen pen = p.pen();
         pen.setColor(Qt::red);
         p.setPen(pen);
         p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
-        p.restore();
     }
     else
     {
+        pen.setWidth(0.1);
+        p.setPen(pen);
         p.drawEllipse(toQPointF(crewMember.position()), 0.2, 0.2);
     }
+    p.restore();
 }

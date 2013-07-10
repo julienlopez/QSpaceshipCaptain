@@ -1,6 +1,7 @@
 #include "ship.hpp"
 #include <utils/json.hpp>
 #include <utils/comparatormethodvalue.hpp>
+#include "systems/system.hpp"
 
 #include <sstream>
 
@@ -187,3 +188,23 @@ void Ship::update(double dt)
     std::for_each(m_crew.begin(), m_crew.end(), std::bind(std::mem_fun_ref(&CrewMember::update), std::placeholders::_1, dt));
 }
 
+Room::cwp_system Ship::powerGenerator() const
+{
+    for(const Room& r : m_rooms)
+    {
+        Room::cwp_system s = r.system();
+        auto syst = s.lock();
+        if(!syst) continue;
+        if(syst->isPowerGenerator())
+            return syst;
+    }
+    return Room::cwp_system();
+}
+
+uint8_t Ship::energyProduced() const
+{
+    Room::cwp_system gen = powerGenerator();
+    auto generator = gen.lock();
+    if(!generator) return 0;
+    return generator->level();
+}

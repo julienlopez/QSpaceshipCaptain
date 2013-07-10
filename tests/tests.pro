@@ -19,7 +19,7 @@ SOURCES += main.cpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/json.cpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/point.cpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/room.cpp \
-    $$QSPACESHIPCAPTAIN_SRC/ship/system.cpp \
+    $$QSPACESHIPCAPTAIN_SRC/ship/systems/system.cpp \
     testroom.cpp \
     testjson.cpp \
     testpathinghelper.cpp
@@ -32,7 +32,7 @@ HEADERS += \
     $$QSPACESHIPCAPTAIN_SRC/utils/json.hpp \
     $$QSPACESHIPCAPTAIN_SRC/utils/point.hpp \
     $$QSPACESHIPCAPTAIN_SRC/ship/room.hpp \
-    $$QSPACESHIPCAPTAIN_SRC/ship/system.hpp \
+    $$QSPACESHIPCAPTAIN_SRC/ship/systems/system.hpp \
     testroom.hpp \
     testjson.hpp \
     testpathinghelper.hpp

@@ -2,6 +2,7 @@
 #include "shipdisplay.hpp"
 #include "crewwidget.hpp"
 #include "ship/ship.hpp"
+#include "powerhandlingwidget.hpp"
 
 #include <QFile>
 #include <QTextStream>
@@ -32,7 +33,11 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout* hl = new QHBoxLayout;
     CrewWidget* crewWidget = new CrewWidget;
     hl->addWidget(crewWidget);
-    hl->addWidget(display);
+
+    QVBoxLayout* vl = new QVBoxLayout;
+    vl->addWidget(display);
+    vl->addWidget(new PowerHandlingWidget);
+    hl->addLayout(vl);
 
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(hl);

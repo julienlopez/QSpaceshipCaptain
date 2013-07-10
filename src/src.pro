@@ -17,7 +17,7 @@ SOURCES += main.cpp\
     ship/room.cpp \
     utils/json.cpp \
     utils/any/any.cpp \
-    ship/system.cpp \
+    ship/systems/system.cpp \
     shipdisplay.cpp \
     utils/stringlist.cpp \
     utils/point.cpp \
@@ -27,7 +27,10 @@ SOURCES += main.cpp\
     crewwidget.cpp \
     crewmemberwidget.cpp \
     ship/graph/graphhelper.cpp \
-    ship/graph/shipgraph.cpp
+    ship/graph/shipgraph.cpp \
+    ship/systems/powergenerator.cpp \
+    powerwidget.cpp \
+    powerhandlingwidget.cpp
 
 HEADERS  += mainwindow.hpp \
     ship/ship.hpp \
@@ -40,7 +43,7 @@ HEADERS  += mainwindow.hpp \
     utils/size.hpp \
     utils/json.hpp \
     utils/any/any.hpp \
-    ship/system.hpp \
+    ship/systems/system.hpp \
     shipdisplay.hpp \
     utils/stringlist.hpp \
     utils/point.hpp \
@@ -57,5 +60,8 @@ HEADERS  += mainwindow.hpp \
     utils/typedefs.hpp \
     utils/iupdateable.hpp \
     ship/graph/graphhelper.hpp \
-    ship/graph/shipgraph.hpp
+    ship/graph/shipgraph.hpp \
+    ship/systems/powergenerator.hpp \
+    powerwidget.hpp \
+    powerhandlingwidget.hpp
 

@@ -1,5 +1,5 @@
 #include "room.hpp"
-#include "system.hpp"
+#include "systems/system.hpp"
 #include <utils/json.hpp>
 
 Room::Room()
@@ -34,7 +34,7 @@ Room Room::fromJson(const AnyMap& map)
     }
     i = map.find("system");
     if(i != map.end()) {
-        res.m_system.reset(new System(System::fromJson(i->second.toString())));
+        res.m_system.reset(System::fromJson(i->second.toMap()));
     }
     return res;
 }
@@ -107,4 +107,9 @@ bool Room::isSquareInRoom(const Point& point) const {
 std::size_t Room::squareNumber() const
 {
     return m_squares.size();
+}
+
+Room::cwp_system Room::system() const
+{
+    return m_system;
 }

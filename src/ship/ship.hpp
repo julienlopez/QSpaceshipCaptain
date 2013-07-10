@@ -63,6 +63,10 @@ public:
 
     virtual void update(double dt) override;
 
+    Room::cwp_system powerGenerator() const;
+
+    uint8_t energyProduced() const;
+
 private:
     std::string m_name;
     type_list_rooms m_rooms;

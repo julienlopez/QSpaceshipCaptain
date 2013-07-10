@@ -16,6 +16,8 @@ class Room
 {
 public:
     typedef std::shared_ptr<System> sp_system;
+    typedef std::weak_ptr<System> wp_system;
+    typedef std::weak_ptr<const System> cwp_system;
 
     typedef std::list<Point> type_list_coords;
 
@@ -58,6 +60,8 @@ public:
     bool isSquareInRoom(const Point& point) const;
 
     std::size_t squareNumber() const;
+
+    cwp_system system() const;
 
 private:
     sp_system m_system;
